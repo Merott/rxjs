@@ -4,7 +4,7 @@ import { auditTime } from '../../operator/auditTime';
 Observable.prototype.auditTime = auditTime;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     auditTime: typeof auditTime;
   }
 }

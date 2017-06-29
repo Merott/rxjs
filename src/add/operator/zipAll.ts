@@ -5,7 +5,7 @@ import { zipAll } from '../../operator/zipAll';
 Observable.prototype.zipAll = zipAll;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     zipAll: typeof zipAll;
   }
 }

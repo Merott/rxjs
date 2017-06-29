@@ -6,7 +6,7 @@ Observable.prototype.finally = _finally;
 Observable.prototype._finally = _finally;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     finally: typeof _finally;
     _finally: typeof _finally;
   }

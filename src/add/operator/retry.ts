@@ -5,7 +5,7 @@ import { retry } from '../../operator/retry';
 Observable.prototype.retry = retry;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     retry: typeof retry;
   }
 }

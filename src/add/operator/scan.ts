@@ -6,7 +6,7 @@ import { scan } from '../../operator/scan';
 Observable.prototype.scan = scan;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     scan: typeof scan;
   }
 }

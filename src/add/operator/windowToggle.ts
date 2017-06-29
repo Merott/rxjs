@@ -5,7 +5,7 @@ import { windowToggle } from '../../operator/windowToggle';
 Observable.prototype.windowToggle = windowToggle;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     windowToggle: typeof windowToggle;
   }
 }

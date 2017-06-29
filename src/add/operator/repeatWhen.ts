@@ -5,7 +5,7 @@ import { repeatWhen } from '../../operator/repeatWhen';
 Observable.prototype.repeatWhen = repeatWhen;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     repeatWhen: typeof repeatWhen;
   }
 }

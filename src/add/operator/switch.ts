@@ -6,7 +6,7 @@ Observable.prototype.switch = _switch;
 Observable.prototype._switch = _switch;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     switch: typeof _switch;
     _switch: typeof _switch;
   }

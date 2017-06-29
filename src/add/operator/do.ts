@@ -6,7 +6,7 @@ Observable.prototype.do = _do;
 Observable.prototype._do = _do;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     do: typeof _do;
     _do: typeof _do;
   }

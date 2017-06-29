@@ -14,7 +14,7 @@ import { rxSubscriber as rxSubscriberSymbol } from './symbol/rxSubscriber';
  *
  * @class Subscriber<T>
  */
-export class Subscriber<T> extends Subscription implements Observer<T> {
+export class Subscriber<T, E = any> extends Subscription implements Observer<T, E> {
 
   [rxSubscriberSymbol]() { return this; }
 
@@ -22,16 +22,16 @@ export class Subscriber<T> extends Subscription implements Observer<T> {
    * A static factory for a Subscriber, given a (potentially partial) definition
    * of an Observer.
    * @param {function(x: ?T): void} [next] The `next` callback of an Observer.
-   * @param {function(e: ?any): void} [error] The `error` callback of an
+   * @param {function(e: ?E): void} [error] The `error` callback of an
    * Observer.
    * @param {function(): void} [complete] The `complete` callback of an
    * Observer.
    * @return {Subscriber<T>} A Subscriber wrapping the (partially defined)
    * Observer represented by the given arguments.
    */
-  static create<T>(next?: (x?: T) => void,
-                   error?: (e?: any) => void,
-                   complete?: () => void): Subscriber<T> {
+  static create<T, E>(next?: (x?: T) => void,
+                      error?: (e?: E) => void,
+                      complete?: () => void): Subscriber<T, E> {
     const subscriber = new Subscriber(next, error, complete);
     subscriber.syncErrorThrowable = false;
     return subscriber;
@@ -42,7 +42,7 @@ export class Subscriber<T> extends Subscription implements Observer<T> {
   public syncErrorThrowable: boolean = false;
 
   protected isStopped: boolean = false;
-  protected destination: PartialObserver<any>; // this `any` is the escape hatch to erase extra type param (e.g. R)
+  protected destination: PartialObserver<any, any>; // this `any` is the escape hatch to erase extra type param (e.g. R)
 
   /**
    * @param {Observer|function(value: T): void} [destinationOrNext] A partially
@@ -52,8 +52,8 @@ export class Subscriber<T> extends Subscription implements Observer<T> {
    * @param {function(): void} [complete] The `complete` callback of an
    * Observer.
    */
-  constructor(destinationOrNext?: PartialObserver<any> | ((value: T) => void),
-              error?: (e?: any) => void,
+  constructor(destinationOrNext?: PartialObserver<any, any> | ((value: T) => void),
+              error?: (e?: E) => void,
               complete?: () => void) {
     super();
 
@@ -68,17 +68,17 @@ export class Subscriber<T> extends Subscription implements Observer<T> {
         }
         if (typeof destinationOrNext === 'object') {
           if (destinationOrNext instanceof Subscriber) {
-            this.destination = (<Subscriber<any>> destinationOrNext);
+            this.destination = (<Subscriber<any, any>> destinationOrNext);
             (<any> this.destination).add(this);
           } else {
             this.syncErrorThrowable = true;
-            this.destination = new SafeSubscriber<T>(this, <PartialObserver<any>> destinationOrNext);
+            this.destination = new SafeSubscriber<T, E>(this, <PartialObserver<any, any>> destinationOrNext);
           }
           break;
         }
       default:
         this.syncErrorThrowable = true;
-        this.destination = new SafeSubscriber<T>(this, <((value: T) => void)> destinationOrNext, error, complete);
+        this.destination = new SafeSubscriber<T, E>(this, <((value: T) => void)> destinationOrNext, error, complete);
         break;
     }
   }
@@ -100,10 +100,10 @@ export class Subscriber<T> extends Subscription implements Observer<T> {
    * The {@link Observer} callback to receive notifications of type `error` from
    * the Observable, with an attached {@link Error}. Notifies the Observer that
    * the Observable has experienced an error condition.
-   * @param {any} [err] The `error` exception.
+   * @param {E} [err] The `error` exception.
    * @return {void}
    */
-  error(err?: any): void {
+  error(err?: E): void {
     if (!this.isStopped) {
       this.isStopped = true;
       this._error(err);
@@ -135,7 +135,7 @@ export class Subscriber<T> extends Subscription implements Observer<T> {
     this.destination.next(value);
   }
 
-  protected _error(err: any): void {
+  protected _error(err: E): void {
     this.destination.error(err);
     this.unsubscribe();
   }
@@ -145,7 +145,7 @@ export class Subscriber<T> extends Subscription implements Observer<T> {
     this.unsubscribe();
   }
 
-  protected _unsubscribeAndRecycle(): Subscriber<T> {
+  protected _unsubscribeAndRecycle(): Subscriber<T, E> {
     const { _parent, _parents } = this;
     this._parent = null;
     this._parents = null;
@@ -163,13 +163,13 @@ export class Subscriber<T> extends Subscription implements Observer<T> {
  * @ignore
  * @extends {Ignored}
  */
-class SafeSubscriber<T> extends Subscriber<T> {
+class SafeSubscriber<T, E> extends Subscriber<T, E> {
 
   private _context: any;
 
-  constructor(private _parentSubscriber: Subscriber<T>,
-              observerOrNext?: PartialObserver<T> | ((value: T) => void),
-              error?: (e?: any) => void,
+  constructor(private _parentSubscriber: Subscriber<T, E>,
+              observerOrNext?: PartialObserver<T, E> | ((value: T) => void),
+              error?: (e?: E) => void,
               complete?: () => void) {
     super();
 
@@ -179,9 +179,9 @@ class SafeSubscriber<T> extends Subscriber<T> {
     if (isFunction(observerOrNext)) {
       next = (<((value: T) => void)> observerOrNext);
     } else if (observerOrNext) {
-      next = (<PartialObserver<T>> observerOrNext).next;
-      error = (<PartialObserver<T>> observerOrNext).error;
-      complete = (<PartialObserver<T>> observerOrNext).complete;
+      next = (<PartialObserver<T, E>> observerOrNext).next;
+      error = (<PartialObserver<T, E>> observerOrNext).error;
+      complete = (<PartialObserver<T, E>> observerOrNext).complete;
       if (observerOrNext !== emptyObserver) {
         context = Object.create(observerOrNext);
         if (isFunction(context.unsubscribe)) {
@@ -208,7 +208,7 @@ class SafeSubscriber<T> extends Subscriber<T> {
     }
   }
 
-  error(err?: any): void {
+  error(err?: E): void {
     if (!this.isStopped) {
       const { _parentSubscriber } = this;
       if (this._error) {
@@ -258,7 +258,7 @@ class SafeSubscriber<T> extends Subscriber<T> {
     }
   }
 
-  private __tryOrSetError(parent: Subscriber<T>, fn: Function, value?: any): boolean {
+  private __tryOrSetError(parent: Subscriber<T, E>, fn: Function, value?: any): boolean {
     try {
       fn.call(this._context, value);
     } catch (err) {

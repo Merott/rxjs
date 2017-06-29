@@ -5,7 +5,7 @@ import { last } from '../../operator/last';
 Observable.prototype.last = <any>last;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     last: typeof last;
   }
 }

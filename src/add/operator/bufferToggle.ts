@@ -5,7 +5,7 @@ import { bufferToggle } from '../../operator/bufferToggle';
 Observable.prototype.bufferToggle = bufferToggle;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     bufferToggle: typeof bufferToggle;
   }
 }

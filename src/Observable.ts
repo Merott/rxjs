@@ -8,14 +8,14 @@ import { IfObservable } from './observable/IfObservable';
 import { ErrorObservable } from './observable/ErrorObservable';
 import { observable as Symbol_observable } from './symbol/observable';
 
-export interface Subscribable<T> {
-  subscribe(observerOrNext?: PartialObserver<T> | ((value: T) => void),
-            error?: (error: any) => void,
+export interface Subscribable<T, E = any> {
+  subscribe(observerOrNext?: PartialObserver<T, E> | ((value: T) => void),
+            error?: (error: E) => void,
             complete?: () => void): AnonymousSubscription;
 }
 
-export type SubscribableOrPromise<T> = Subscribable<T> | PromiseLike<T>;
-export type ObservableInput<T> = SubscribableOrPromise<T> | ArrayLike<T>;
+export type SubscribableOrPromise<T, E = any> = Subscribable<T, E> | PromiseLike<T>;
+export type ObservableInput<T, E = any> = SubscribableOrPromise<T, E> | ArrayLike<T>;
 
 /**
  * A representation of any set of values over any amount of time. This the most basic building block
@@ -23,12 +23,12 @@ export type ObservableInput<T> = SubscribableOrPromise<T> | ArrayLike<T>;
  *
  * @class Observable<T>
  */
-export class Observable<T> implements Subscribable<T> {
+export class Observable<T, E = any> implements Subscribable<T, E> {
 
   public _isScalar: boolean = false;
 
-  protected source: Observable<any>;
-  protected operator: Operator<any, T>;
+  protected source: Observable<any, any>;
+  protected operator: Operator<any, T, E>;
 
   /**
    * @constructor
@@ -37,7 +37,7 @@ export class Observable<T> implements Subscribable<T> {
    * can be `next`ed, or an `error` method can be called to raise an error, or
    * `complete` can be called to notify of a successful completion.
    */
-  constructor(subscribe?: (this: Observable<T>, subscriber: Subscriber<T>) => TeardownLogic) {
+  constructor(subscribe?: (this: Observable<T, E>, subscriber: Subscriber<T, E>) => TeardownLogic) {
     if (subscribe) {
       this._subscribe = subscribe;
     }
@@ -53,8 +53,8 @@ export class Observable<T> implements Subscribable<T> {
    * @param {Function} subscribe? the subscriber function to be passed to the Observable constructor
    * @return {Observable} a new cold observable
    */
-  static create: Function = <T>(subscribe?: (subscriber: Subscriber<T>) => TeardownLogic) => {
-    return new Observable<T>(subscribe);
+  static create: Function = <T, E>(subscribe?: (subscriber: Subscriber<T, E>) => TeardownLogic) => {
+    return new Observable<T, E>(subscribe);
   }
 
   /**
@@ -64,16 +64,16 @@ export class Observable<T> implements Subscribable<T> {
    * @param {Operator} operator the operator defining the operation to take on the observable
    * @return {Observable} a new observable with the Operator applied
    */
-  lift<R>(operator: Operator<T, R>): Observable<R> {
-    const observable = new Observable<R>();
+  lift<R>(operator: Operator<T, R, E>): Observable<R, E> {
+    const observable = new Observable<R, E>();
     observable.source = this;
     observable.operator = operator;
     return observable;
   }
 
   subscribe(): Subscription;
-  subscribe(observer: PartialObserver<T>): Subscription;
-  subscribe(next?: (value: T) => void, error?: (error: any) => void, complete?: () => void): Subscription;
+  subscribe(observer: PartialObserver<T, E>): Subscription;
+  subscribe(next?: (value: T) => void, error?: (error: E) => void, complete?: () => void): Subscription;
   /**
    * Invokes an execution of an Observable and registers Observer handlers for notifications it will emit.
    *
@@ -188,8 +188,8 @@ export class Observable<T> implements Subscribable<T> {
    * @return {ISubscription} a subscription reference to the registered handlers
    * @method subscribe
    */
-  subscribe(observerOrNext?: PartialObserver<T> | ((value: T) => void),
-            error?: (error: any) => void,
+  subscribe(observerOrNext?: PartialObserver<T, E> | ((value: T) => void),
+            error?: (error: E) => void,
             complete?: () => void): Subscription {
 
     const { operator } = this;
@@ -211,7 +211,7 @@ export class Observable<T> implements Subscribable<T> {
     return sink;
   }
 
-  protected _trySubscribe(sink: Subscriber<T>): TeardownLogic {
+  protected _trySubscribe(sink: Subscriber<T, E>): TeardownLogic {
     try {
       return this._subscribe(sink);
     } catch (err) {
@@ -270,7 +270,7 @@ export class Observable<T> implements Subscribable<T> {
     });
   }
 
-  protected _subscribe(subscriber: Subscriber<any>): TeardownLogic {
+  protected _subscribe(subscriber: Subscriber<any, any>): TeardownLogic {
     return this.source.subscribe(subscriber);
   }
 

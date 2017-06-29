@@ -5,7 +5,7 @@ import { distinctUntilChanged } from '../../operator/distinctUntilChanged';
 Observable.prototype.distinctUntilChanged = distinctUntilChanged;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     distinctUntilChanged: typeof distinctUntilChanged;
   }
 }

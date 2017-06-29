@@ -5,7 +5,7 @@ import { multicast } from '../../operator/multicast';
 Observable.prototype.multicast = <any>multicast;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     multicast: typeof multicast;
   }
 }

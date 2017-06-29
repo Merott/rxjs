@@ -5,7 +5,7 @@ import { mapTo } from '../../operator/mapTo';
 Observable.prototype.mapTo = mapTo;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     mapTo: typeof mapTo;
   }
 }

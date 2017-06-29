@@ -5,7 +5,7 @@ import { windowCount } from '../../operator/windowCount';
 Observable.prototype.windowCount = windowCount;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     windowCount: typeof windowCount;
   }
 }

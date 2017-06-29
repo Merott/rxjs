@@ -5,7 +5,7 @@ import { zipProto } from '../../operator/zip';
 Observable.prototype.zip = zipProto;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     zip: typeof zipProto;
   }
 }

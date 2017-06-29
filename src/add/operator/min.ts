@@ -5,7 +5,7 @@ import { min } from '../../operator/min';
 Observable.prototype.min = min;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     min: typeof min;
   }
 }

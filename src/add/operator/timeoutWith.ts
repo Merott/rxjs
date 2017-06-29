@@ -5,7 +5,7 @@ import { timeoutWith } from '../../operator/timeoutWith';
 Observable.prototype.timeoutWith = timeoutWith;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     timeoutWith: typeof timeoutWith;
   }
 }

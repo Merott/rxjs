@@ -5,7 +5,7 @@ import { timeInterval } from '../../operator/timeInterval';
 Observable.prototype.timeInterval = timeInterval;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     timeInterval: typeof timeInterval;
   }
 }

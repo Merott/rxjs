@@ -5,7 +5,7 @@ import { groupBy } from '../../operator/groupBy';
 Observable.prototype.groupBy = <any>groupBy;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     groupBy: typeof groupBy;
   }
 }

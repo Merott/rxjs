@@ -5,7 +5,7 @@ import { delay } from '../../operator/delay';
 Observable.prototype.delay = delay;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     delay: typeof delay;
   }
 }

@@ -5,7 +5,7 @@ import { publishReplay } from '../../operator/publishReplay';
 Observable.prototype.publishReplay = publishReplay;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     publishReplay: typeof publishReplay;
   }
 }

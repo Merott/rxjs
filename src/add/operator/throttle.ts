@@ -5,7 +5,7 @@ import { throttle } from '../../operator/throttle';
 Observable.prototype.throttle = throttle;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     throttle: typeof throttle;
   }
 }

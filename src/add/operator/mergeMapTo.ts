@@ -6,7 +6,7 @@ Observable.prototype.flatMapTo = <any>mergeMapTo;
 Observable.prototype.mergeMapTo = <any>mergeMapTo;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     flatMapTo: typeof mergeMapTo;
     mergeMapTo: typeof mergeMapTo;
   }

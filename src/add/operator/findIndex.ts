@@ -5,7 +5,7 @@ import { findIndex } from '../../operator/findIndex';
 Observable.prototype.findIndex = findIndex;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     findIndex: typeof findIndex;
   }
 }

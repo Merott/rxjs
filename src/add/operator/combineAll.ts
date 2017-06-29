@@ -5,7 +5,7 @@ import { combineAll } from '../../operator/combineAll';
 Observable.prototype.combineAll = combineAll;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     combineAll: typeof combineAll;
   }
 }

@@ -5,7 +5,7 @@ import { defaultIfEmpty } from '../../operator/defaultIfEmpty';
 Observable.prototype.defaultIfEmpty = defaultIfEmpty;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     defaultIfEmpty: typeof defaultIfEmpty;
   }
 }

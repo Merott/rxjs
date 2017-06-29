@@ -5,7 +5,7 @@ import { combineLatest } from '../../operator/combineLatest';
 Observable.prototype.combineLatest = combineLatest;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     combineLatest: typeof combineLatest;
   }
 }

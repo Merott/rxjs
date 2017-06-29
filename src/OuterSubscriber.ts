@@ -6,14 +6,14 @@ import { InnerSubscriber } from './InnerSubscriber';
  * @ignore
  * @extends {Ignored}
  */
-export class OuterSubscriber<T, R> extends Subscriber<T> {
+export class OuterSubscriber<T, R, E = any> extends Subscriber<T, E> {
   notifyNext(outerValue: T, innerValue: R,
              outerIndex: number, innerIndex: number,
              innerSub: InnerSubscriber<T, R>): void {
     this.destination.next(innerValue);
   }
 
-  notifyError(error: any, innerSub: InnerSubscriber<T, R>): void {
+  notifyError(error: E, innerSub: InnerSubscriber<T, R>): void {
     this.destination.error(error);
   }
 

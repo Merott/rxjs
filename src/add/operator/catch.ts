@@ -6,7 +6,7 @@ Observable.prototype.catch = _catch;
 Observable.prototype._catch = _catch;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     catch: typeof _catch;
     _catch: typeof _catch;
   }

@@ -35,18 +35,18 @@ import { Observable } from '../Observable';
  * @method map
  * @owner Observable
  */
-export function map<T, R>(this: Observable<T>, project: (value: T, index: number) => R, thisArg?: any): Observable<R> {
+export function map<T, R, E>(this: Observable<T, E>, project: (value: T, index: number) => R, thisArg?: any): Observable<R, E> {
   if (typeof project !== 'function') {
     throw new TypeError('argument is not a function. Are you looking for `mapTo()`?');
   }
   return this.lift(new MapOperator(project, thisArg));
 }
 
-export class MapOperator<T, R> implements Operator<T, R> {
+export class MapOperator<T, R, E> implements Operator<T, R, E> {
   constructor(private project: (value: T, index: number) => R, private thisArg: any) {
   }
 
-  call(subscriber: Subscriber<R>, source: any): any {
+  call(subscriber: Subscriber<R, E>, source: any): any {
     return source.subscribe(new MapSubscriber(subscriber, this.project, this.thisArg));
   }
 }
@@ -56,11 +56,11 @@ export class MapOperator<T, R> implements Operator<T, R> {
  * @ignore
  * @extends {Ignored}
  */
-class MapSubscriber<T, R> extends Subscriber<T> {
+class MapSubscriber<T, R, E> extends Subscriber<T, E> {
   count: number = 0;
   private thisArg: any;
 
-  constructor(destination: Subscriber<R>,
+  constructor(destination: Subscriber<R, E>,
               private project: (value: T, index: number) => R,
               thisArg: any) {
     super(destination);

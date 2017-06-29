@@ -5,7 +5,7 @@ import { partition } from '../../operator/partition';
 Observable.prototype.partition = partition;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     partition: typeof partition;
   }
 }

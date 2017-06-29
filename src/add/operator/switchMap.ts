@@ -5,7 +5,7 @@ import { switchMap } from '../../operator/switchMap';
 Observable.prototype.switchMap = switchMap;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     switchMap: typeof switchMap;
   }
 }

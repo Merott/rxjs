@@ -5,7 +5,7 @@ import { concatAll } from '../../operator/concatAll';
 Observable.prototype.concatAll = concatAll;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     concatAll: typeof concatAll;
   }
 }

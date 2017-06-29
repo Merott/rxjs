@@ -5,7 +5,7 @@ import { retryWhen } from '../../operator/retryWhen';
 Observable.prototype.retryWhen = retryWhen;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     retryWhen: typeof retryWhen;
   }
 }

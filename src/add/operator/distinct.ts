@@ -4,7 +4,7 @@ import { distinct } from '../../operator/distinct';
 Observable.prototype.distinct = distinct;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     distinct: typeof distinct;
   }
 }

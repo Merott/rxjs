@@ -5,7 +5,7 @@ import { debounce } from '../../operator/debounce';
 Observable.prototype.debounce = debounce;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     debounce: typeof debounce;
   }
 }

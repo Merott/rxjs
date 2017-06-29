@@ -5,7 +5,7 @@ import { merge } from '../../operator/merge';
 Observable.prototype.merge = merge;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     merge: typeof merge;
   }
 }

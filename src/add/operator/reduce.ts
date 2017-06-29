@@ -5,7 +5,7 @@ import { reduce } from '../../operator/reduce';
 Observable.prototype.reduce = reduce;
 
 declare module '../../Observable' {
-  interface Observable<T> {
+  interface Observable<T, E = any> {
     reduce: typeof reduce;
   }
 }

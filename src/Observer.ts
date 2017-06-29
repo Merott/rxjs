@@ -1,34 +1,34 @@
-export interface NextObserver<T> {
+export interface NextObserver<T, E = any> {
   closed?: boolean;
   next: (value: T) => void;
-  error?: (err: any) => void;
+  error?: (err: E) => void;
   complete?: () => void;
 }
 
-export interface ErrorObserver<T> {
+export interface ErrorObserver<T, E = any> {
   closed?: boolean;
   next?: (value: T) => void;
-  error: (err: any) => void;
+  error: (err: E) => void;
   complete?: () => void;
 }
 
-export interface CompletionObserver<T> {
+export interface CompletionObserver<T, E = any> {
   closed?: boolean;
   next?: (value: T) => void;
-  error?: (err: any) => void;
+  error?: (err: E) => void;
   complete: () => void;
 }
 
-export type PartialObserver<T> = NextObserver<T> | ErrorObserver<T> | CompletionObserver<T>;
+export type PartialObserver<T, E = any> = NextObserver<T, E> | ErrorObserver<T, E> | CompletionObserver<T, E>;
 
-export interface Observer<T> {
+export interface Observer<T, E = any> {
   closed?: boolean;
   next: (value: T) => void;
-  error: (err: any) => void;
+  error: (err: E) => void;
   complete: () => void;
 }
 
-export const empty: Observer<any> = {
+export const empty: Observer<any, any> = {
   closed: true,
   next(value: any): void { /* noop */},
   error(err: any): void { throw err; },
